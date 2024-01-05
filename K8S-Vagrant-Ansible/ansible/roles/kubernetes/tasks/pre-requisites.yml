@@ -90,3 +90,76 @@
     name: containerd
     state: started
     enabled: yes
+
+
+
+- ansible.posix.sysctl:
+    name: net.bridge.bridge-nf-call-ip6tables
+    value: '1'
+    sysctl_set: true
+    state: present
+    reload: true
+
+- ansible.posix.sysctl:
+    name: net.bridge.bridge-nf-call-iptables
+    value: '1'
+    sysctl_set: true
+    state: present
+    reload: true
+
+- ansible.posix.sysctl:
+    name: net.ipv4.ip_forward
+    value: '1'
+    sysctl_set: true
+    state: present
+    reload: true
+
+- name: Install dependencies
+  apt:
+    name: "{{ kubernetes_prerequisites_packages }}"
+    state: present
+    update_cache: yes
+    cache_valid_time: 3600
+
+- name: Check if repo already exists
+  stat:
+    path: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+  register: __kubernetes_apt_key
+
+- name: Check if repo already exists
+  stat:
+    path: /etc/apt/sources.list.d/kubernetes.list
+  register: __kubernetes_apt_source
+
+- name: Install the key
+  shell: curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+  when: not __kubernetes_apt_key.stat.exists
+
+- name: Install the repo
+  shell: "echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list"
+  when: not __kubernetes_apt_source.stat.exists
+  notify: update_apt_cache
+
+- ansible.builtin.meta: flush_handlers
+
+- name: Install Kubernetes packages
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+    cache_valid_time: 3600
+  loop:
+    - "kubelet={{ kubernetes_version }}"
+    - "kubeadm={{ kubernetes_version }}"
+    - "kubectl={{ kubernetes_version }}"
+
+- name: Hold kubernetes packages
+  dpkg_selections:
+    name: "{{ item }}"
+    selection: hold
+  loop:
+    - kubelet
+    - kubeadm
+    - kubectl
+
+
