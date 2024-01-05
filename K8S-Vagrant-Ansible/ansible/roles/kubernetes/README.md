@@ -5,8 +5,12 @@ A brief description of the role goes here.
 
 Requirements
 ------------
+Installer : Vagrant, Ansible
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+Installer ces deux plugins 
+vagrant plugin install vagrant-faster
+vagrant plugin install vagrant-cachier
+pour ne pas avoir  l'erreur : "* Unknown configuration section 'cache'." au moment du vagrant up,
 
 Role Variables
 --------------
