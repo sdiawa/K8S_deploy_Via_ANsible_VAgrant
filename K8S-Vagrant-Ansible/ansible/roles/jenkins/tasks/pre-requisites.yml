@@ -1,0 +1,78 @@
+---
+- name: Mise à jour du cache apt
+  apt:
+    update_cache: yes
+
+- name: Installation des prérequis
+  apt:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - default-jdk 
+    - wget
+    - gnupg2
+    - apt-transport-https
+    - ca-certificates
+    - curl
+    - software-properties-common
+
+- name: Ajout de la clé GPG de Jenkins
+  apt_key:
+    url: https://pkg.jenkins.io/debian/jenkins.io.key
+    state: present
+
+- name: Ajout du référentiel Jenkins aux sources APT
+  apt_repository:
+    repo: deb http://pkg.jenkins.io/debian-stable binary/
+    state: present
+
+- name: Installation de Jenkins
+  apt:
+    name: jenkins
+    state: present
+
+- name: Ajout de la clé GPG de Docker
+  apt_key:
+    url: https://download.docker.com/linux/debian/gpg
+    state: present
+
+- name: Ajout du référentiel Docker aux sources APT
+  apt_repository:
+    repo: "deb [arch=amd64] https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable"
+    state: present
+
+- name: Installation de Docker
+  apt:
+    name: docker-ce
+    state: present
+
+- name: Installation de Docker Compose
+  shell: >
+     curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+     && chmod +x /usr/local/bin/docker-compose
+
+
+- name: Démarrage et activation du service Jenkins
+  systemd:
+    name: jenkins
+    state: started
+    enabled: yes
+
+- name: enable jenkins
+  systemd:
+    name: jenkins
+    enabled: true
+
+- name: Attendre 30 secondes avant de continuer
+  wait_for:
+    timeout: 30
+ # delegate_to: localhost
+  
+- name: Initialisation du mot de passe Jenkins
+  shell: cat /var/lib/jenkins/secrets/initialAdminPassword
+  changed_when: false
+  register: result
+
+- name: Afficher le mot de passe d'initialisation de Jenkins
+  debug:
+     var: result.stdout

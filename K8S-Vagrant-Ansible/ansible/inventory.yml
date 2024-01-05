@@ -16,3 +16,9 @@ all:
               ansible_host: 192.168.56.14
             kubw2:
               ansible_host: 192.168.56.15
+
+        jenkins:
+          hosts:
+            jenkins:
+              ansible_host: 192.168.56.16
+ 
