@@ -9,7 +9,9 @@ Installer : Vagrant, Ansible
 
 Installer ces deux plugins 
 vagrant plugin install vagrant-faster
+
 vagrant plugin install vagrant-cachier
+
 pour ne pas avoir  l'erreur : "* Unknown configuration section 'cache'." au moment du vagrant up,
 
 Role Variables
@@ -57,7 +59,9 @@ sudo -s
 
 dpkg -l | grep kubelet ou dpkg -l | grep kube
 
-kubectl get nodes
+kubectl get nodes => verifier les nodes
+
+kubectl get pods -A => verifier les kube routeurs
 
 
 
