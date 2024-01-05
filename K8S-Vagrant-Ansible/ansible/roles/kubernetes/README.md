@@ -40,3 +40,15 @@ Author Information
 ------------------
 
 An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+
+COMMENCER PAR LA CONFIGURATION DU MASTER1 kubm1
+
+vagrant up kubm1 dans /vagrant
+
+ansible -i inventory.yml all, -m ping -u vagrant dans /ansible/
+
+ansible-playbook -i inventory.yml -u vagrant -l kubm1 playbook.yml dans /ansible/
+
+
+
+
