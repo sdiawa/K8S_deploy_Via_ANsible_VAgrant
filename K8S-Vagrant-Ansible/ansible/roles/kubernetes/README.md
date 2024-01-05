@@ -52,11 +52,12 @@ ansible-playbook -i inventory.yml -u vagrant -l kubm1 playbook.yml dans /ansible
 * Apres deploiement sur KUBM1
 
 vagrant ssh kubm1  
+sudo -s
 => pour verfifier installation
 
 dpkg -l | grep kubelet ou dpkg -l | grep kube
 
-
+kubectl get nodes
 
 
 

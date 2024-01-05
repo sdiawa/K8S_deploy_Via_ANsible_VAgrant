@@ -8,6 +8,6 @@
   include_tasks: init.yml
   when: kubeadm_init_master == ansible_hostname and ansible_hostname in groups[kubeadm_master_group_name]
 
-#- name: Join server
-#  include_tasks: join.yml
-#  when: kubeadm_init_master != ansible_hostname
+- name: Join server
+  include_tasks: join.yml
+  when: kubeadm_init_master != ansible_hostname
