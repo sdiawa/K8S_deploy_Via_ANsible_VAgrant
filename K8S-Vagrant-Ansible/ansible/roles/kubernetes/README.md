@@ -49,6 +49,14 @@ ansible -i inventory.yml all, -m ping -u vagrant dans /ansible/
 
 ansible-playbook -i inventory.yml -u vagrant -l kubm1 playbook.yml dans /ansible/
 
+* Apres deploiement sur KUBM1
+
+vagrant ssh kubm1  
+=> pour verfifier installation
+
+dpkg -l | grep kubelet ou dpkg -l | grep kube
+
+
 
 
 
