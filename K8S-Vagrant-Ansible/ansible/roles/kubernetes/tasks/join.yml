@@ -24,6 +24,16 @@
   register: __cmd_res
   changed_when: __cmd_res.rc != 0
 
+- name: Ensure that had not a failed install previously
+  command: kubeadm reset -f
+  when: ansible_hostname not in __cmd_res.stdout
+  changed_when: false
+
+- name: Pull images
+  command: kubeadm config images pull
+  when: ansible_hostname not in __cmd_res.stdout
+  changed_when: false
+
 - name: Get join command
   delegate_to: "{{ kubeadm_init_master }}"
   command: kubeadm init phase upload-certs --upload-certs
